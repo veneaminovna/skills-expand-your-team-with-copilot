@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchButton = document.getElementById("search-button");
   const categoryFilters = document.querySelectorAll(".category-filter");
   const dayFilters = document.querySelectorAll(".day-filter");
+  const difficultyFilters = document.querySelectorAll(".difficulty-filter");
   const timeFilters = document.querySelectorAll(".time-filter");
 
   // Authentication elements
@@ -39,6 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentFilter = "all";
   let searchQuery = "";
   let currentDay = "";
+  let currentDifficulty = "";
   let currentTimeRange = "";
 
   // Authentication state
@@ -57,6 +59,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const activeDayFilter = document.querySelector(".day-filter.active");
     if (activeDayFilter) {
       currentDay = activeDayFilter.dataset.day;
+    }
+
+    // Initialize difficulty filter
+    const activeDifficultyFilter = document.querySelector(".difficulty-filter.active");
+    if (activeDifficultyFilter) {
+      currentDifficulty = activeDifficultyFilter.dataset.difficulty;
     }
 
     // Initialize time filter
@@ -89,6 +97,22 @@ document.addEventListener("DOMContentLoaded", () => {
     // Update active class
     timeFilters.forEach((btn) => {
       if (btn.dataset.time === timeRange) {
+        btn.classList.add("active");
+      } else {
+        btn.classList.remove("active");
+      }
+    });
+
+    fetchActivities();
+  }
+
+  // Function to set difficulty filter
+  function setDifficultyFilter(difficulty) {
+    currentDifficulty = difficulty;
+
+    // Update active class
+    difficultyFilters.forEach((btn) => {
+      if (btn.dataset.difficulty === difficulty) {
         btn.classList.add("active");
       } else {
         btn.classList.remove("active");
@@ -363,7 +387,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return "academic";
   }
 
-  // Function to fetch activities from API with optional day and time filters
+  // Function to fetch activities from API with optional day, time, and difficulty filters
   async function fetchActivities() {
     // Show loading skeletons first
     showLoadingSkeletons();
@@ -375,6 +399,11 @@ document.addEventListener("DOMContentLoaded", () => {
       // Handle day filter
       if (currentDay) {
         queryParams.push(`day=${encodeURIComponent(currentDay)}`);
+      }
+
+      // Handle difficulty filter
+      if (currentDifficulty) {
+        queryParams.push(`difficulty=${encodeURIComponent(currentDifficulty)}`);
       }
 
       // Handle time range filter
@@ -506,6 +535,13 @@ document.addEventListener("DOMContentLoaded", () => {
       </span>
     `;
 
+    // Create difficulty badge (only if difficulty is set)
+    const difficultyBadgeHtml = details.difficulty ? `
+      <span class="difficulty-badge difficulty-${details.difficulty.toLowerCase()}">
+        ${details.difficulty}
+      </span>
+    ` : '';
+
     // Create capacity indicator
     const capacityIndicator = `
       <div class="capacity-container ${capacityStatusClass}">
@@ -521,6 +557,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     activityCard.innerHTML = `
       ${tagHtml}
+      ${difficultyBadgeHtml}
       <h4>${name}</h4>
       <p>${details.description}</p>
       <p class="tooltip">
@@ -624,6 +661,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Update current day filter and fetch activities
       currentDay = button.dataset.day;
+      fetchActivities();
+    });
+  });
+
+  // Add event listeners for difficulty filter buttons
+  difficultyFilters.forEach((button) => {
+    button.addEventListener("click", () => {
+      // Update active class
+      difficultyFilters.forEach((btn) => btn.classList.remove("active"));
+      button.classList.add("active");
+
+      // Update current difficulty filter and fetch activities
+      currentDifficulty = button.dataset.difficulty;
       fetchActivities();
     });
   });
@@ -859,6 +909,7 @@ document.addEventListener("DOMContentLoaded", () => {
   window.activityFilters = {
     setDayFilter,
     setTimeRangeFilter,
+    setDifficultyFilter,
   };
 
   // Initialize app
