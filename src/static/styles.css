@@ -35,9 +35,9 @@
 /* Dark mode colors */
 body.dark-mode {
   /* Primary colors */
-  --primary: #3949ab;
-  --primary-light: #6b76c6;
-  --primary-dark: #1a237e;
+  --primary: #5c6bc0;
+  --primary-light: #8e99f3;
+  --primary-dark: #3949ab;
 
   /* Neutral colors */
   --background: #1a1a1a;
@@ -696,22 +696,6 @@ footer {
 }
 
 /* Dark mode toggle button */
-#dark-mode-toggle {
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 20px;
-  padding: 4px 12px;
-  font-size: 0.85rem;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  transition: background-color 0.2s;
-  cursor: pointer;
-}
-
-#dark-mode-toggle:hover {
-  background-color: rgba(255, 255, 255, 0.3);
-}
-
 .theme-icon {
   font-size: 1rem;
 }
